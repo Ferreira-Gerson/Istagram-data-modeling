@@ -8,23 +8,55 @@ from eralchemy import render_er
 
 Base = declarative_base()
 
-class Person(Base):
-    __tablename__ = 'person'
-    # Here we define columns for the table person
+class User(Base):
+    __tablename__ = 'user'
+    # Here we define columns for the table user
+    # Notice that each column is also a normal Python instance attribute.
+    id = Column(Integer, primary_key=True)
+    first_name = Column(String(250), nullable=False)
+    last_name = Column(String(250), nullable=False)
+    email = Column(String(250), unique=True)
+    nick_name = Column(String(250), unique=False)
+
+class Followers(Base):
+    __tablename__ = 'Followers'
+    # Here we define columns for the table Followers.
     # Notice that each column is also a normal Python instance attribute.
     id = Column(Integer, primary_key=True)
     name = Column(String(250), nullable=False)
+    user_id = Column(Integer, ForeignKey('user.id'))
+    user_from_id = Column(Integer, ForeignKey('user.from.id'))
+    user = relationship(User)
 
-class Address(Base):
-    __tablename__ = 'address'
-    # Here we define columns for the table address.
-    # Notice that each column is also a normal Python instance attribute.
+class Posts(Base):
+    __tablename__ = 'posts'
     id = Column(Integer, primary_key=True)
-    street_name = Column(String(250))
-    street_number = Column(String(250))
-    post_code = Column(String(250), nullable=False)
-    person_id = Column(Integer, ForeignKey('person.id'))
-    person = relationship(Person)
+    date = Column(Integer)
+    likes = Column(nullable=True)
+    user_id = Column(Integer, ForeignKey('user.id'))
+
+
+class Media(Base):
+    __tablename__ = 'media'
+    id = Column(Integer, primary_key=True)
+    link = Column(String())
+    url = (String(1000))
+    posts_id = Column(Integer, ForeignKey('posts.id'))
+    followers_id = Column(Integer, ForeignKey('followers.id'))
+    
+
+
+class Comment(Base):
+    __tablename__ = 'comment'
+    id = Column(Integer, primary_key=True)
+    comment_text = (String(300))
+    autor = (String(250))
+    posts_id = Column(Integer, ForeignKey('posts.id'))
+    followers_id = Column(Integer, ForeignKey('followers.id'))
+
+
+
+    
 
     def to_dict(self):
         return {}
